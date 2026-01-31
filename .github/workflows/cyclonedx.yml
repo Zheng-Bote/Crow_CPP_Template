@@ -27,7 +27,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build build-essential
+          sudo apt-get install -y cmake ninja-build build-essential gcc-15-x86-64-linux-gnu-base libboost-dev libboost-system-dev libboost-date-time-dev libboost-regex-dev libboost-ext-ut-dev libboost-ext-ut-dev libboost-ext-ut-dev libboost-test-dev
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
