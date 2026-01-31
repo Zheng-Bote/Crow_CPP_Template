@@ -4,49 +4,52 @@ A modern, high-performance C++23 Web Server template based on the Crow framework
 
 ## 🚀 Features
 
-*   **Modern C++23**: Utilizes the latest C++ standards.
-*   **Web Framework**: Powered by [Crow](https://github.com/CrowCpp/Crow) for fast routing and HTTP handling.
-*   **MVC Architecture**: Strict separation of concerns (Controllers, Services, Models/DTOs, Utils).
-*   **Database**: SQLite integration via `sqlite3` with a thread-safe singleton wrapper.
-*   **Email Service**: SMTP client (via `mailio`) with HTML templating support (via `inja`).
-*   **Configuration**: Environment variable management using `.env` files (via `dotenv-cpp`).
-*   **Logging**: High-performance logging with `spdlog` (Console + Rotating File Sinks).
-*   **JSON Support**: Integrated `nlohmann/json`.
+- **Modern C++23**: Utilizes the latest C++ standards.
+- **Web Framework**: Powered by [Crow](https://github.com/CrowCpp/Crow) for fast routing and HTTP handling.
+- **MVC Architecture**: Strict separation of concerns (Controllers, Services, Models/DTOs, Utils).
+- **Database**: SQLite integration via `sqlite3` with a thread-safe singleton wrapper.
+- **Email Service**: SMTP client (via `mailio`) with HTML templating support (via `inja`).
+- **Configuration**: Environment variable management using `.env` files (via `dotenv-cpp`).
+- **Logging**: High-performance logging with `spdlog` (Console + Rotating File Sinks).
+- **JSON Support**: Integrated `nlohmann/json`.
 
 ## 🛠 Dependencies
 
 This project uses `CMake`'s `FetchContent` to manage dependencies automatically. No manual installation is required for libraries.
 
-*   **Crow**: C++ Microframework for Web.
-*   **nlohmann/json**: JSON for Modern C++.
-*   **spdlog**: Fast C++ logging library.
-*   **sqlite3**: C-language library that implements a SQL database engine.
-*   **mailio**: C++ MIME library and SMTP client.
-*   **inja**: Template engine for modern C++.
-*   **dotenv-cpp**: Load environment variables from .env files.
-*   **Boost.Asio / OpenSSL**: Required for networking and SSL/TLS.
+- **Crow**: C++ Microframework for Web.
+- **nlohmann/json**: JSON for Modern C++.
+- **spdlog**: Fast C++ logging library.
+- **sqlite3**: C-language library that implements a SQL database engine.
+- **mailio**: C++ MIME library and SMTP client.
+- **inja**: Template engine for modern C++.
+- **dotenv-cpp**: Load environment variables from .env files.
+- **Boost.Asio / OpenSSL**: Required for networking and SSL/TLS.
 
 ## ⚙️ Prerequisites
 
-*   **C++ Compiler**: GCC 13+ or Clang 16+ (Must support C++23).
-*   **CMake**: Version 3.28 or higher.
-*   **OpenSSL**: Development libraries (e.g., `libssl-dev`).
-*   **SQLite3**: Development libraries (e.g., `libsqlite3-dev`).
+- **C++ Compiler**: GCC 13+ or Clang 16+ (Must support C++23).
+- **CMake**: Version 3.28 or higher.
+- **OpenSSL**: Development libraries (e.g., `libssl-dev`).
+- **SQLite3**: Development libraries (e.g., `libsqlite3-dev`).
 
 ## 🏗️ Build & Run
 
 1.  **Clone the repository**
+
     ```bash
     git clone <repository_url>
     cd Crow_CPP_Template
     ```
 
 2.  **Configure the project**
+
     ```bash
     cmake -S . -B build
     ```
 
 3.  **Build**
+
     ```bash
     cmake --build build -j$(nproc)
     ```
@@ -92,25 +95,26 @@ UPLOAD_DIR=./data/uploads
 
 ## 📡 API Documentation
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| **GET** | `/` | Returns application name, version, and status. |
-| **GET** | `/status` | Simple health check (Returns 200 OK). |
-| **GET** | `/system/health_check` | Returns detailed status and server timestamp. |
-| **GET** | `/system/system_info` | Returns full project info, version details, and build environment. |
-| **GET** | `/system/test_email` | **Debug**: Creates a test user and sends a system info email to the admin address. |
+| Method  | Endpoint               | Description                                                                        |
+| :------ | :--------------------- | :--------------------------------------------------------------------------------- |
+| **GET** | `/`                    | Returns application name, version, and status.                                     |
+| **GET** | `/status`              | Simple health check (Returns 200 OK).                                              |
+| **GET** | `/system/health_check` | Returns detailed status and server timestamp.                                      |
+| **GET** | `/system/system_info`  | Returns full project info, version details, and build environment.                 |
+| **GET** | `/system/test_email`   | **Debug**: Creates a test user and sends a system info email to the admin address. |
 
 ## 📐 Architecture
 
 The project follows a modular Layered Architecture.
 
 ### Directory Structure
-*   `include/` - Header files (Interfaces).
-*   `src/` - Implementation files.
-    *   `controllers/` - Handle HTTP requests and map them to service logic.
-    *   `services/` - Business logic, DB access, External APIs (SMTP).
-    *   `utils/` - Helper classes (Config, Logging).
-*   `data/` - Runtime data (Config, DB, Logs, Templates).
+
+- `include/` - Header files (Interfaces).
+- `src/` - Implementation files.
+  - `controllers/` - Handle HTTP requests and map them to service logic.
+  - `services/` - Business logic, DB access, External APIs (SMTP).
+  - `utils/` - Helper classes (Config, Logging).
+- `data/` - Runtime data (Config, DB, Logs, Templates).
 
 ### Class Diagram (Mermaid)
 
@@ -166,10 +170,10 @@ classDiagram
 2.  **Fetch Data**: `NotificationService` queries `DatabaseService` to get the user's email and notification preferences (enabled? language?).
 3.  **Prepare**: If enabled, the service prepares the payload (injecting user name, etc.).
 4.  **Send**: `SmtpService` is invoked.
-    *   Loads the correct HTML template (based on language) via `inja`.
-    *   Renders the template with the payload.
-    *   Connects to the SMTP server (using `mailio` with `STARTTLS`).
-    *   Sends the email.
+    - Loads the correct HTML template (based on language) via `inja`.
+    - Renders the template with the payload.
+    - Connects to the SMTP server (using `mailio` with `STARTTLS`).
+    - Sends the email.
 
 ```mermaid
 sequenceDiagram
@@ -184,7 +188,7 @@ sequenceDiagram
     DB-->>NS: User{name, email}
     NS->>DB: getNotificationConfig(uuid)
     DB-->>NS: Config{email_enabled, lang}
-    
+
     alt Email Enabled
         NS->>SMTP: sendEmail(email, lang, data)
         SMTP->>SMTP: Load & Render Template
@@ -193,7 +197,7 @@ sequenceDiagram
         MailSrv-->>SMTP: OK
         SMTP-->>NS: Success
     end
-    
+
     NS-->>Ctrl: Success
 ```
 
@@ -202,5 +206,6 @@ sequenceDiagram
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-**Author:** ZHENG Robert (robert@hase-zheng.net)
+
+**Author:** ZHENG Robert
 **Copyright:** © 2026 ZHENG Robert
