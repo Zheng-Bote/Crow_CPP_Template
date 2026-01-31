@@ -71,5 +71,29 @@ jobs:
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cyclonedx-sbom spdx-sbom
-          path: cyclonedx-${{ steps.version.outputs.version }}.json spdx-${{ steps.version.outputs.version }}.json
+          name: sbom-files
+          path: |
+            cyclonedx-${{ steps.version.outputs.version }}.json
+            spdx-${{ steps.version.outputs.version }}.json
+
+  # ===========================================================================
+  # CREATE RELEASE
+  # ===========================================================================
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # Nur laufen lassen, wenn es ein Tag ist
+
+    steps:
+      - name: Download SBOM Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom-files
+          path: ./sbom-files
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            sbom-files/*
+          generate_release_notes: true
