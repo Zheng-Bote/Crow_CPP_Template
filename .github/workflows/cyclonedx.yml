@@ -64,8 +64,10 @@ jobs:
       - name: Install SBOM Tools
         run: |
           pip install reuse
-          npm install -g @appthreat/atom
+          # npm install -g @appthreat/atom
           npm install -g @cyclonedx/cdxgen
+          wget https://github.com/AppThreat/atom/releases/download/v2.5.2/atom.zip
+          unzip atom.zip
 
       - name: Prepare Output Directory
         run: mkdir -p docs
@@ -76,7 +78,7 @@ jobs:
 
       - name: Run Atom Analysis
         run: |
-          atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom-${{ steps.version.outputs.version }}.json -l cpp .
+          ./atom/bin/atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom-${{ steps.version.outputs.version }}.json -l cpp .
 
       - name: Generate CycloneDX SBOM (build-aware)
         env:
@@ -84,8 +86,6 @@ jobs:
           CDXGEN_COMPILE_COMMANDS_FILE: build/compile_commands.json
           CDXGEN_DEBUG_MODE: debug
         run: |
-          ls -lh build/compile_commands.json
-
           cdxgen \
             --output ./docs/cyclonedx-${{ steps.version.outputs.version }}.json \
             --output-format json \
