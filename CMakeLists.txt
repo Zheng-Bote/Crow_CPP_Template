@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.28)
 # cmake --build build -j$(nproc)
 
 # use GNU Compiler, not Clang (due to SPDLOG)
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
+#set(CMAKE_C_COMPILER "gcc")
+#set(CMAKE_CXX_COMPILER "g++")
 
 
 project(CPPAppServer
