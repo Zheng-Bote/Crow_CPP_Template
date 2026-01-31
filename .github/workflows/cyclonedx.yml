@@ -69,7 +69,7 @@ jobs:
             --author "ZHENG Robert" \
             -o cyclonedx-${{ steps.version.outputs.version }}.json \
             .
-          
+
           echo "Listing generated files:"
           ls -la *.json
 
@@ -78,8 +78,7 @@ jobs:
         with:
           name: sbom-files
           path: |
-            cyclonedx-${{ steps.version.outputs.version }}.json
-            spdx-${{ steps.version.outputs.version }}.json
+            *.json
 
   # ===========================================================================
   # CREATE RELEASE
