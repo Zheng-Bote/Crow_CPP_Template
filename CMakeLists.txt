@@ -130,21 +130,35 @@ FetchContent_MakeAvailable(mailio)
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG        v1.12.0
+    GIT_TAG        v1.17.0
 )
 FetchContent_MakeAvailable(spdlog)
 
 set(HEADERS
     include/rz_config.hpp
+    include/controllers/home_controller.hpp
+    include/controllers/system_controller.hpp
+    include/middleware/auth_middleware.hpp
+    include/services/smtp_service.hpp
+    include/services/database_service.hpp
+    include/services/notification_service.hpp
+    include/utils/app_config.hpp
+    include/utils/totp_utils.hpp
+    include/utils/token_utils.hpp
+    include/utils/password_utils.hpp
 )
 set(SOURCES
     src/main.cpp
-    src/utils/app_config.cpp
     src/controllers/home_controller.cpp
     src/controllers/system_controller.cpp
     src/services/smtp_service.cpp
     src/services/database_service.cpp
     src/services/notification_service.cpp
+    src/utils/app_config.cpp
+    src/utils/totp_utils.cpp
+    src/utils/token_utils.cpp
+    src/utils/password_utils.cpp
+    
 )
 # Create executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
