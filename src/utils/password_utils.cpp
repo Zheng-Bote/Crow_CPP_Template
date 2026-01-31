@@ -2,8 +2,8 @@
  * @file password_utils.cpp
  * @author ZHENG Robert (robert@hase-zheng.net)
  * @brief Password Hashing Utilities
- * @version 0.15.0
- * @date 2026-01-24
+ * @version 0.16.0
+ * @date 2026-01-31
  *
  * @copyright Copyright (c) 2026 ZHENG Robert
  *
@@ -17,11 +17,10 @@
 
 #include "utils/password_utils.hpp"
 #include "argon2.h"
-#include <QByteArray>
-#include <QDebug>
-#include <QUuid>
+#include <iostream>
 #include <random>
 #include <vector>
+#include <algorithm>
 
 // Internal constants for Argon2id security
 const uint32_t T_COST = 3;      // 3 iterations
@@ -45,7 +44,7 @@ namespace utils {
  * @param plainText The password to hash.
  * @return The encoded hash string (including salt and parameters) or empty string on failure.
  */
-QString PasswordUtils::hashPassword(const QString &plainText) {
+std::string PasswordUtils::hashPassword(const std::string &plainText) {
   uint8_t salt[SALT_LEN];
   std::random_device rd;
   std::uniform_int_distribution<uint8_t> dist(0, 255);
@@ -57,18 +56,16 @@ QString PasswordUtils::hashPassword(const QString &plainText) {
                                         HASH_LEN, Argon2_id);
   std::vector<char> encoded(encodedLen);
 
-  QByteArray pwdBytes = plainText.toUtf8();
-
   int result = argon2id_hash_encoded(
-      T_COST, M_COST, PARALLELISM, pwdBytes.data(), pwdBytes.length(), salt,
+      T_COST, M_COST, PARALLELISM, plainText.c_str(), plainText.length(), salt,
       SALT_LEN, HASH_LEN, encoded.data(), encodedLen);
 
   if (result != ARGON2_OK) {
-    qCritical() << "Argon2 use failed, Error Code:" << result;
-    return QString();
+    std::cerr << "Argon2 use failed, Error Code:" << result << std::endl;
+    return std::string();
   }
 
-  return QString::fromLatin1(encoded.data());
+  return std::string(encoded.data());
 }
 
 /**
@@ -78,16 +75,13 @@ QString PasswordUtils::hashPassword(const QString &plainText) {
  * @param encodedHash The Argon2id encoded hash to verify against.
  * @return True if the password matches, false otherwise.
  */
-bool PasswordUtils::verifyPassword(const QString &plainText,
-                                   const QString &encodedHash) {
-  if (encodedHash.isEmpty())
+bool PasswordUtils::verifyPassword(const std::string &plainText,
+                                   const std::string &encodedHash) {
+  if (encodedHash.empty())
     return false;
 
-  QByteArray pwdBytes = plainText.toUtf8();
-  std::string hashStr = encodedHash.toStdString();
-
   int result =
-      argon2id_verify(hashStr.c_str(), pwdBytes.data(), pwdBytes.length());
+      argon2id_verify(encodedHash.c_str(), plainText.c_str(), plainText.length());
 
   return (result == ARGON2_OK);
 }
@@ -98,18 +92,20 @@ bool PasswordUtils::verifyPassword(const QString &plainText,
  * @param length Length of the password.
  * @return Random string.
  */
-QString PasswordUtils::generateRandomPassword(int length) {
-    const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const size_t max_index = (sizeof(charset) - 1);
+std::string PasswordUtils::generateRandomPassword(int length) {
+    static const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    // sizeof(charset) includes the null terminator, so subtract 1.
+    // However, for valid indices 0..(size-2), we use max_index - 1 in distribution.
+    const size_t charset_len = sizeof(charset) - 1;
 
     std::random_device rd;
     std::mt19937 generator(rd());
-    std::uniform_int_distribution<size_t> distribution(0, max_index - 1); // fix range
+    std::uniform_int_distribution<size_t> distribution(0, charset_len - 1);
 
-    QString password;
+    std::string password;
     password.reserve(length);
     for (int i = 0; i < length; ++i) {
-        password.append(QChar::fromLatin1(charset[distribution(generator)]));
+        password.push_back(charset[distribution(generator)]);
     }
     return password;
 }

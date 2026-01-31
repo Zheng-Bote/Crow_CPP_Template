@@ -1,9 +1,9 @@
 /**
  * @file token_utils.hpp
  * @author ZHENG Robert (robert@hase-zheng.net)
- * @brief No description provided
- * @version 0.15.0
- * @date 2026-01-24
+ * @brief JWT Token Utilities
+ * @version 0.16.0
+ * @date 2026-01-31
  *
  * @copyright Copyright (c) 2026 ZHENG Robert
  *
@@ -11,7 +11,7 @@
  */
 
 #pragma once
-#include <QString>
+#include <string>
 #include <jwt-cpp/jwt.h>
 #include <optional>
 
@@ -19,15 +19,15 @@ namespace rz {
 namespace utils {
 
 struct TokenPayload {
-  QString userId;
-  QString email;
+  std::string userId;
+  std::string email;
   bool isAdmin;
 };
 
 class TokenUtils {
 public:
   // Generates a token, valid for 24h
-  static QString generateToken(const QString &userId, const QString &email,
+  static std::string generateToken(const std::string &userId, const std::string &email,
                                bool isAdmin);
 
   // Verifies the token and returns payload (or nullopt on error)

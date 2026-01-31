@@ -2,8 +2,8 @@
  * @file totp_utils.cpp
  * @author ZHENG Robert (robert@hase-zheng.net)
  * @brief Time-based One-Time Password (TOTP) Utilities
- * @version 0.15.0
- * @date 2026-01-24
+ * @version 0.16.0
+ * @date 2026-01-31
  *
  * @copyright Copyright (c) 2026 ZHENG Robert
  *
@@ -11,8 +11,7 @@
  */
 
 #include "utils/totp_utils.hpp"
-#include <QDateTime>
-#include <QDebug>
+#include <chrono>
 #include <cmath>
 #include <iomanip>
 #include <openssl/evp.h>
@@ -20,6 +19,7 @@
 #include <random>
 #include <sstream>
 #include <cstring>
+#include <format> // C++20/23
 
 // Base32 Alphabet (RFC 4648)
 static const char *B32_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -35,13 +35,13 @@ namespace utils {
  *
  * @return The generated secret string.
  */
-QString TotpUtils::generateSecret() {
+std::string TotpUtils::generateSecret() {
   std::random_device rd;
   std::uniform_int_distribution<int> dist(0, 31);
 
-  QString secret;
+  std::string secret;
   for (int i = 0; i < 32; ++i) {
-    secret.append(B32_CHARS[dist(rd)]);
+    secret.push_back(B32_CHARS[dist(rd)]);
   }
   return secret;
 }
@@ -56,12 +56,15 @@ QString TotpUtils::generateSecret() {
  * @param issuer The name of the issuer (e.g., "Cake Planner").
  * @return The provisioning URI string.
  */
-QString TotpUtils::getProvisioningUri(const QString &userEmail,
-                                      const QString &secret,
-                                      const QString &issuer) {
-  return QString("otpauth://totp/"
-                 "%1:%2?secret=%3&issuer=%1&algorithm=SHA1&digits=6&period=30")
-      .arg(issuer, userEmail, secret);
+std::string TotpUtils::getProvisioningUri(const std::string &userEmail,
+                                      const std::string &secret,
+                                      const std::string &issuer) {
+  // otpauth://totp/Issuer:UserEmail?secret=SECRET&issuer=Issuer&algorithm=SHA1&digits=6&period=30
+  // Note: For simplicity, we assume simple string formatting. 
+  // In a robust implementation, URL encoding for email/issuer should be considered.
+  
+  return std::format("otpauth://totp/{}:{}?secret={}&issuer={}&algorithm=SHA1&digits=6&period=30",
+                     issuer, userEmail, secret, issuer);
 }
 
 /**
@@ -73,7 +76,9 @@ QString TotpUtils::getProvisioningUri(const QString &userEmail,
  * @return The current time step.
  */
 int64_t TotpUtils::getCurrentTimeStep() {
-  return QDateTime::currentSecsSinceEpoch() / 30;
+    auto now = std::chrono::system_clock::now();
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+    return seconds / 30;
 }
 
 /**
@@ -82,13 +87,14 @@ int64_t TotpUtils::getCurrentTimeStep() {
  * @param secret The Base32 encoded secret.
  * @return A vector of bytes representing the decoded secret.
  */
-std::vector<uint8_t> TotpUtils::base32Decode(const QString &secret) {
+std::vector<uint8_t> TotpUtils::base32Decode(const std::string &secret) {
   std::vector<uint8_t> result;
   unsigned int buffer = 0;
   int bitsLeft = 0;
 
-  for (QChar c : secret.toUpper()) {
-    const char *p = strchr(B32_CHARS, c.toLatin1());
+  for (char c : secret) {
+    char upper_c = std::toupper(static_cast<unsigned char>(c));
+    const char *p = std::strchr(B32_CHARS, upper_c);
     if (!p)
       continue;
 
@@ -113,7 +119,7 @@ std::vector<uint8_t> TotpUtils::base32Decode(const QString &secret) {
  * @param timeStep The time step to generate the code for.
  * @return The 6-digit TOTP code as a string.
  */
-QString TotpUtils::generateCodeForStep(const std::vector<uint8_t> &keyBytes,
+std::string TotpUtils::generateCodeForStep(const std::vector<uint8_t> &keyBytes,
                                        int64_t timeStep) {
   uint8_t timeData[8];
   for (int i = 7; i >= 0; --i) {
@@ -136,7 +142,7 @@ QString TotpUtils::generateCodeForStep(const std::vector<uint8_t> &keyBytes,
 
   std::ostringstream ss;
   ss << std::setw(6) << std::setfill('0') << otp;
-  return QString::fromStdString(ss.str());
+  return ss.str();
 }
 
 /**
@@ -149,8 +155,8 @@ QString TotpUtils::generateCodeForStep(const std::vector<uint8_t> &keyBytes,
  * @param code The TOTP code to validate.
  * @return True if the code is valid, false otherwise.
  */
-bool TotpUtils::validateCode(const QString &secret, const QString &code) {
-  if (secret.isEmpty() || code.length() != 6) return false;
+bool TotpUtils::validateCode(const std::string &secret, const std::string &code) {
+  if (secret.empty() || code.length() != 6) return false;
 
   std::vector<uint8_t> keyBytes = base32Decode(secret);
   int64_t currentStep = getCurrentTimeStep();

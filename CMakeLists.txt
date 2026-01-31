@@ -149,16 +149,15 @@ set(HEADERS
 )
 set(SOURCES
     src/main.cpp
+    src/utils/app_config.cpp
     src/controllers/home_controller.cpp
     src/controllers/system_controller.cpp
     src/services/smtp_service.cpp
     src/services/database_service.cpp
     src/services/notification_service.cpp
-    src/utils/app_config.cpp
-    src/utils/totp_utils.cpp
-    src/utils/token_utils.cpp
     src/utils/password_utils.cpp
-    
+    src/utils/token_utils.cpp
+    src/utils/totp_utils.cpp
 )
 # Create executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})

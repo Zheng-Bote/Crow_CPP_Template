@@ -2,8 +2,8 @@
  * @file token_utils.cpp
  * @author ZHENG Robert (robert@hase-zheng.net)
  * @brief JWT Token Utilities Implementation
- * @version 0.15.0
- * @date 2026-01-24
+ * @version 0.16.0
+ * @date 2026-01-31
  *
  * @copyright Copyright (c) 2026 ZHENG Robert
  *
@@ -11,27 +11,29 @@
  */
 
 #include "utils/token_utils.hpp"
-#include "utils/env_loader.hpp"
+#include "utils/app_config.hpp" // Using AppConfig instead of EnvLoader
 #include <chrono>
 #include <iostream>
 
 // Access JSON Traits for Bool conversion
 using json_value = jwt::traits::kazuho_picojson::value_type;
 
-// CORRECTION: Put everything in the namespace rz::utils
 namespace rz {
 namespace utils {
 
-// Helper in namespace (now finds EnvLoader)
+// Helper to get secret from AppConfig
 static std::string getSecret() {
-  QString secret = EnvLoader::get("CAKE_JWT_SECRET", "");
-  if (secret.isEmpty()) {
+  auto& config = rz::utils::AppConfig::getInstance();
+  // Using AppConfig which handles env loading
+  std::string secret = config.getString("SERVER_JWT_SECRET", "");
+  
+  if (secret.empty()) {
     std::cerr
-        << "WARNING: CAKE_JWT_SECRET not set! Using unsafe default."
+        << "WARNING: SERVER_JWT_SECRET not set! Using unsafe default."
         << std::endl;
     return "CHANGE_ME_IN_PRODUCTION_THIS_IS_UNSAFE";
   }
-  return secret.toStdString();
+  return secret;
 }
 
 /**
@@ -45,7 +47,7 @@ static std::string getSecret() {
  * @param isAdmin True if the user is an administrator.
  * @return The generated JWT as a string.
  */
-QString TokenUtils::generateToken(const QString &userId, const QString &email,
+std::string TokenUtils::generateToken(const std::string &userId, const std::string &email,
                                   bool isAdmin) {
   auto now = std::chrono::system_clock::now();
 
@@ -54,12 +56,12 @@ QString TokenUtils::generateToken(const QString &userId, const QString &email,
                    .set_type("JWS")
                    .set_issued_at(now)
                    .set_expires_at(now + std::chrono::hours(24))
-                   .set_payload_claim("uid", jwt::claim(userId.toStdString()))
-                   .set_payload_claim("sub", jwt::claim(email.toStdString()))
+                   .set_payload_claim("uid", jwt::claim(userId))
+                   .set_payload_claim("sub", jwt::claim(email))
                    .set_payload_claim("adm", jwt::claim(json_value(isAdmin)))
                    .sign(jwt::algorithm::hs256{getSecret()});
 
-  return QString::fromStdString(token);
+  return token;
 }
 
 /**
@@ -81,10 +83,8 @@ TokenUtils::verifyToken(const std::string &rawToken) {
     verifier.verify(decoded);
 
     TokenPayload payload;
-    payload.userId =
-        QString::fromStdString(decoded.get_payload_claim("uid").as_string());
-    payload.email =
-        QString::fromStdString(decoded.get_payload_claim("sub").as_string());
+    payload.userId = decoded.get_payload_claim("uid").as_string();
+    payload.email = decoded.get_payload_claim("sub").as_string();
 
     if (decoded.has_payload_claim("adm")) {
       auto claim = decoded.get_payload_claim("adm");
