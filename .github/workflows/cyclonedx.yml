@@ -62,23 +62,22 @@ jobs:
         run: |
           cdxgen \
             --spec-version 1.5 \
-            --type application \
+            -t cpp \
+            --deep \
             --name CPPAppServer \
             --group net.hase-zheng \
             --version ${{ steps.version.outputs.version }} \
             --author "ZHENG Robert" \
-            --output cyclonedx-${{ steps.version.outputs.version }}.json \
+            -o cyclonedx-${{ steps.version.outputs.version }}.json \
             .
-
-          echo "Listing generated files:"
-          ls -la *.json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
           name: sbom-files
           path: |
-            *.json
+            cyclonedx-${{ steps.version.outputs.version }}.json
+            spdx-${{ steps.version.outputs.version }}.json
 
   # ===========================================================================
   # CREATE RELEASE
