@@ -72,7 +72,7 @@ jobs:
 
       - name: Generate SPDX SBOM
         run: |
-          reuse spdx -o docs/spdx-${{ steps.version.outputs.version }}.txt
+          reuse spdx -o ./docs/spdx-${{ steps.version.outputs.version }}.txt
 
       - name: Run Atom Analysis
         run: |
