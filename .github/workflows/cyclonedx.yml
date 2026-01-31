@@ -41,7 +41,22 @@ jobs:
         run: |
           cmake --build build --config Release
 
+      - name: Setup Python (für reuse)
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install SBOM Tools
+        run: |
+          pip install reuse
+          npm install -g @cyclonedx/cdxgen
+
+      - name: Generate SPDX SBOM
+        run: |
+          reuse spdx -o spdx-${{ steps.version.outputs.version }}.json
+
       - name: Generate CycloneDX SBOM (build-aware)
+        shell: bash
         run: |
           cdxgen \
             --input build/compile_commands.json \
@@ -56,5 +71,5 @@ jobs:
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cyclonedx-sbom
-          path: cyclonedx-${{ steps.version.outputs.version }}.json
+          name: cyclonedx-sbom spdx-sbom
+          path: cyclonedx-${{ steps.version.outputs.version }}.json spdx-${{ steps.version.outputs.version }}.json
