@@ -1,4 +1,5 @@
-name: Release SBOM (CycloneDX)
+name: Release SBOM
+run-name: create SPDX/CycloneDX SBOM by ${{ github.actor }}
 
 on:
   release:
@@ -65,6 +66,8 @@ jobs:
           pip install reuse
           npm install -g @appthreat/atom
           npm install -g @cyclonedx/cdxgen
+          #wget https://github.com/AppThreat/atom/releases/download/v2.5.2/atom.zip
+          #unzip atom.zip
 
       - name: Prepare Output Directory
         run: mkdir -p docs
@@ -75,7 +78,7 @@ jobs:
 
       - name: Run Atom Analysis
         run: |
-          atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom_-${{ steps.version.outputs.version }}.json -l cpp .
+          atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom-${{ steps.version.outputs.version }}.json -l cpp .
 
       - name: Generate CycloneDX SBOM (build-aware)
         env:
@@ -90,7 +93,7 @@ jobs:
             --output-format json \
             --spec-version 1.5 \
             -t cpp \
-            --usages-slices-file ./docs/atom_-${{ steps.version.outputs.version }}.json \
+            --usages-slices-file ./docs/atom-${{ steps.version.outputs.version }}.json \
             --deep \
             --name CPPAppServer \
             --group net.hase-zheng \
