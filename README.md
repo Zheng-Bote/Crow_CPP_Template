@@ -3,6 +3,11 @@
 
 <p>C++23 Crow template project.</p>
 
+[Report Issue](https://github.com/Zheng-Bote/Crow_CPP_Template/issues) · [Request Feature](https://github.com/Zheng-Bote/Crow_CPP_Template/pulls)
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Zheng-Bote/Crow_CPP_Template?logo=GitHub)](https://github.com/Zheng-Bote/Crow_CPP_Template/releases)
+
 </div>
 
 ---
@@ -13,6 +18,9 @@
 ---
 
 ## Description
+
+![Language](https://img.shields.io/badge/Language-C%2B%2B23-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Linux-lightgrey.svg)
 
 A modern, high-performance C++23 Web Server template based on the Crow framework. This project demonstrates a clean, layered architecture (MVC) suitable for building scalable REST APIs and web applications. It includes built-in services for Database interaction (SQLite), Email notifications (SMTP/Inja Templates), and comprehensive Logging (Spdlog).
 
