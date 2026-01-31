@@ -1,4 +1,10 @@
 name: Release SBOM
+
+# file: .github/workflows/cyclonedx.yml
+# version: 1.0.0
+# created: 2026-01-31
+# author: ZHENG Robert
+
 run-name: create SPDX/CycloneDX SBOM by ${{ github.actor }}
 
 on:
@@ -78,7 +84,7 @@ jobs:
 
       - name: Run Atom Analysis
         run: |
-          ./atom/bin/atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom-${{ steps.version.outputs.version }}.json -l cpp .
+          ./bin/atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom-${{ steps.version.outputs.version }}.json -l cpp .
 
       - name: Generate CycloneDX SBOM (build-aware)
         env:
@@ -97,10 +103,7 @@ jobs:
             --project-name CPPAppServer \
             --project-group net.hase-zheng \
             --project-version ${{ steps.version.outputs.version }} \
-            --author "ZHENG Robert" \
-            .
-          echo "Listing generated files:"
-          ls -la ./docs/*.json
+            --author "ZHENG Robert"
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
