@@ -59,7 +59,10 @@ jobs:
         shell: bash
         env:
           CDXGEN_COMPILE_COMMANDS_FILE: build/compile_commands.json
+          CDXGEN_DEBUG_MODE: debug
         run: |
+          ls -lh build/compile_commands.json
+          
           cdxgen \
             --spec-version 1.5 \
             -t cpp \
@@ -68,10 +71,18 @@ jobs:
             --group net.hase-zheng \
             --version ${{ steps.version.outputs.version }} \
             --author "ZHENG Robert" \
-            --output cyclonedx-${{ steps.version.outputs.version }}.json \
             .
+          
+          if [ -f "bom.json" ]; then
+            mv bom.json cyclonedx-${{ steps.version.outputs.version }}.json
+            echo "SBOM generated successfully."
+          else
+            echo "Error: bom.json was not generated."
+            exit 1
+          fi
+          
           echo "Listing generated files:"
-          ls -al
+          ls -la *.json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
