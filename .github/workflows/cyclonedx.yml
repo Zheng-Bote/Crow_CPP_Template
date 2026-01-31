@@ -63,6 +63,7 @@ jobs:
       - name: Install SBOM Tools
         run: |
           pip install reuse
+          npm install -g @appthreat/atom
           npm install -g @cyclonedx/cdxgen
 
       - name: Prepare Output Directory
