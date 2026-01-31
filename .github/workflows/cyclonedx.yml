@@ -66,8 +66,6 @@ jobs:
           pip install reuse
           npm install -g @appthreat/atom
           npm install -g @cyclonedx/cdxgen
-          #wget https://github.com/AppThreat/atom/releases/download/v2.5.2/atom.zip
-          #unzip atom.zip
 
       - name: Prepare Output Directory
         run: mkdir -p docs
@@ -91,13 +89,14 @@ jobs:
           cdxgen \
             --output ./docs/cyclonedx-${{ steps.version.outputs.version }}.json \
             --output-format json \
-            --spec-version 1.5 \
+            --spec-version 1.6 \
             -t cpp \
             --usages-slices-file ./docs/atom-${{ steps.version.outputs.version }}.json \
             --deep \
-            --name CPPAppServer \
-            --group net.hase-zheng \
-            --version ${{ steps.version.outputs.version }} \
+            --recurse \
+            --project-name CPPAppServer \
+            --project-group net.hase-zheng \
+            --project-version ${{ steps.version.outputs.version }} \
             --author "ZHENG Robert" \
             .
           echo "Listing generated files:"
