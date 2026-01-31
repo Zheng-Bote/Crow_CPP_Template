@@ -1,4 +1,18 @@
-# CPP App Server (Crow Framework)
+<div id="top" align="center">
+<h1>CPP App Server (Crow Framework)</h1>
+
+<p>C++23 Crow template project.</p>
+
+</div>
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+---
+
+## Description
 
 A modern, high-performance C++23 Web Server template based on the Crow framework. This project demonstrates a clean, layered architecture (MVC) suitable for building scalable REST APIs and web applications. It includes built-in services for Database interaction (SQLite), Email notifications (SMTP/Inja Templates), and comprehensive Logging (Spdlog).
 
@@ -201,11 +215,22 @@ sequenceDiagram
     NS-->>Ctrl: Success
 ```
 
+---
+
 ## 📜 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-**Author:** ZHENG Robert
+## Authors
+
+[![Zheng Robert](https://img.shields.io/badge/Github-Zheng_Robert-black?logo=github)](https://www.github.com/Zheng-Bote)
+
 **Copyright:** © 2026 ZHENG Robert
+
+---
+
+:vulcan_salute:
+
+<p align="right">(<a href="#top">back to top</a>)</p>
