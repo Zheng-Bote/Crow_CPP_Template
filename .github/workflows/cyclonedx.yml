@@ -30,7 +30,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build build-essential gcc-14 g++-14 libboost-dev libboost-system-dev libboost-date-time-dev libboost-regex-dev libboost-test-dev libssl-dev libsqlite3-dev
+          sudo apt-get install -y wget cmake ninja-build build-essential gcc-14 g++-14 libboost-dev libboost-system-dev libboost-date-time-dev libboost-regex-dev libboost-test-dev libssl-dev libsqlite3-dev
 
       - name: Configure CMake (export compile_commands)
         run: |
@@ -75,7 +75,7 @@ jobs:
 
       - name: Run Atom Analysis
         run: |
-          atom -o ./docs/app.atom --slice-outfile ./docs/atom_-${{ steps.version.outputs.version }}.json -l cpp .
+          atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom_-${{ steps.version.outputs.version }}.json -l cpp .
 
       - name: Generate CycloneDX SBOM (build-aware)
         env:
