@@ -71,11 +71,11 @@ jobs:
 
       - name: Generate SPDX SBOM
         run: |
-          reuse spdx -o docs/spdx-${{ steps.version.outputs.version }}.json
+          reuse spdx -o docs/spdx-${{ steps.version.outputs.version }}.txt
 
       - name: Run Atom Analysis
         run: |
-          atom -J-Xmx16g usages -o ./docs/app.atom --slice-outfile ./docs/atom_-${{ steps.version.outputs.version }}.json -l cpp ./src
+          atom -o ./docs/app.atom --slice-outfile ./docs/atom_-${{ steps.version.outputs.version }}.json -l cpp .
 
       - name: Generate CycloneDX SBOM (build-aware)
         env:
@@ -87,6 +87,7 @@ jobs:
 
           cdxgen \
             --output ./docs/cyclonedx-${{ steps.version.outputs.version }}.json \
+            --output-format json \
             --spec-version 1.5 \
             -t cpp \
             --usages-slices-file ./docs/atom_-${{ steps.version.outputs.version }}.json \
@@ -105,7 +106,7 @@ jobs:
           name: sbom-files
           path: |
             ./docs/cyclonedx-${{ steps.version.outputs.version }}.json
-            ./docs/spdx-${{ steps.version.outputs.version }}.json
+            ./docs/spdx-${{ steps.version.outputs.version }}.txt
 
   # ===========================================================================
   # CREATE RELEASE
