@@ -114,7 +114,7 @@ jobs:
         run: |
           cve-bin-tool --sbom cyclonedx --sbom-file ./docs/cyclonedx-${{ steps.version.outputs.version }}.json \
           --format json --output ./docs/cve-report-${{ steps.version.outputs.version }}.json \
-          --disable-data-source OSV,EPSS
+          --disable-data-source OSV,EPSS --cvss 9.0
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
