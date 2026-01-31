@@ -30,11 +30,10 @@ jobs:
           sudo apt-get install -y cmake ninja-build build-essential gcc-14 g++-14 libboost-dev libboost-system-dev libboost-date-time-dev libboost-regex-dev libboost-test-dev libssl-dev libsqlite3-dev
 
       - name: Configure CMake (export compile_commands)
-        env:
-          CC: gcc-14
-          CXX: g++-14
         run: |
           cmake -S . -B build \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14 \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
