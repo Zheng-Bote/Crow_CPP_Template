@@ -1,0 +1,6 @@
+Hallo {{name}},
+
+Dies ist eine Test-E-Mail von {{sender}}.
+
+Mit freundlichen Grüßen,
+{{ sender_name }}

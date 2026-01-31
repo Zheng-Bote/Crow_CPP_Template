@@ -1,0 +1,6 @@
+Hello {{name}},
+
+This is a test email from {{sender}}.
+
+Best regards,
+{{ sender_name }}

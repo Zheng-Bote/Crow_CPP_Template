@@ -1,0 +1,8 @@
+build/**
+
+data/db/CPPAppServer.sqlite
+data/logs/CPPAppServer.log
+data/CPPAppServer.env
+
+GEMINI.md
+
