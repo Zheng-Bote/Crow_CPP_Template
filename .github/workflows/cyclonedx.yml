@@ -67,7 +67,7 @@ jobs:
             --group net.hase-zheng \
             --version ${{ steps.version.outputs.version }} \
             --author "ZHENG Robert" \
-            -o cyclonedx-${{ steps.version.outputs.version }}.json \
+            --output cyclonedx-${{ steps.version.outputs.version }}.json \
             .
 
           echo "Listing generated files:"
