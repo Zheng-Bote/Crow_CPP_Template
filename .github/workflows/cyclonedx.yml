@@ -1,7 +1,7 @@
 name: Release SBOM
 
 # file: .github/workflows/cyclonedx.yml
-# version: 1.1.1
+# version: 1.1.2
 # created: 2026-01-31
 # author: ZHENG Robert
 
@@ -85,7 +85,7 @@ jobs:
 
       - name: Generate SPDX SBOM
         run: |
-          reuse spdx -o ./docs/spdx-${{ steps.version.outputs.version }}.txt
+          reuse spdx -o ./docs/spdx-${{ steps.version.outputs.version }}.spdx
 
       - name: Run Atom Analysis
         run: |
@@ -122,7 +122,7 @@ jobs:
           name: sbom-files
           path: |
             ./docs/cyclonedx-${{ steps.version.outputs.version }}.json
-            ./docs/spdx-${{ steps.version.outputs.version }}.txt
+            ./docs/spdx-${{ steps.version.outputs.version }}.spdx
             ./docs/cve-report-${{ steps.version.outputs.version }}.json
 
   # ===========================================================================
