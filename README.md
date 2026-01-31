@@ -13,6 +13,23 @@
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Description](#description)
+- [🚀 Features](#-features)
+- [🛠 Dependencies](#-dependencies)
+- [⚙️ Prerequisites](#-prerequisites)
+- [🏗️ Build & Run](#-build--run)
+- [📝 Configuration](#-configuration)
+- [📡 API Documentation](#-api-documentation)
+- [📐 Architecture](#-architecture)
+  - [Directory Structure](#directory-structure)
+  - [Class Diagram (Mermaid)](#class-diagram-mermaid)
+  - [Notification Workflow](#notification-workflow)
+- [📜 License](#-license)
+- [Authors](#authors)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
